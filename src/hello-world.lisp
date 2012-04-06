@@ -48,7 +48,7 @@ TODO: cleanup code."
 
 ;; (defvar *preferences* '(("thinking forth" . 7)))
 ;; (format t "~{~a ~}" (cdr *posix-argv*))
-(show-iberlibro-hits (format nil "~{~a ~}" (cdr *posix-argv*)))
+;; (show-iberlibro-hits (format nil "~{~a ~}" (cdr *posix-argv*)))
 
 
 (hunchentoot:define-easy-handler (hello-sbcl :uri "/books") ()
@@ -57,8 +57,7 @@ TODO: cleanup code."
      (:head
       (:title "prices"))
      (:body
-      (:h1 (show-iberlibro-hits "thinking forth")))
-     )))
+      (:h1 (show-iberlibro-hits "thinking forth"))))))
 
 (hunchentoot:define-easy-handler (hello-sbcl :uri "/") ()
   (cl-who:with-html-output-to-string (s)
