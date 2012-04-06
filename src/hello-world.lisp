@@ -1,5 +1,5 @@
 (in-package :example)
-
+;(hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 4242))
 ;; Utils
 (defun heroku-getenv (target)
   #+ccl (ccl:getenv target)
@@ -32,6 +32,7 @@ TODO: cleanup code."
                 (equal (stp:attribute-value elem "class") "price"))
        (setq price-str (stp:data (stp:first-child elem)))
        (setq price (+ price (read-from-string (subseq price-str 4))))))
+   (sleep 7)
    price))
 
 ;;; http://www.iberlibro.com/servlet/SearchResults?sts=t&tn=lisp+in+small+pieces&x=0&y=0
@@ -52,7 +53,7 @@ TODO: cleanup code."
       (:title "Heroku CL Example App"))
      (:body
       (:h1 "Heroku CL Example App")
-      (:h1 (show-iberlibro-hits "thinking forth"))
+      (:h1 (format s "preu: ~a" (show-iberlibro-hits "thinking forth")))
       (:h3 "Using")
       (:ul
        (:li (format s "~A ~A" (lisp-implementation-type) (lisp-implementation-version)))
@@ -66,5 +67,5 @@ TODO: cleanup code."
       (:div
        (:pre "SELECT version();"))
       (:div (format s "~A" (postmodern:with-connection (db-params)
-			     (postmodern:query "select version()"))))
+                             (postmodern:query "select version()"))))
       (:div (:p "raimonster@gmail.com"))))))
