@@ -42,4 +42,5 @@ TODO: cleanup code."
       (:div
        (:pre "SELECT version();"))
       (:div (format s "~A" (postmodern:with-connection (db-params)
-			     (postmodern:query "select version()"))))))))
+			     (postmodern:query "select version()"))))
+      (:div (:p "raimonster@gmail.com"))))))
