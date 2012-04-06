@@ -66,6 +66,7 @@ TODO: cleanup code."
       (:title "Heroku CL Example App"))
      (:body
       (:h1 "Heroku CL Example App")
+      (:h1 (show-iberlibro-hits "thinking forth"))
       (:h3 "Using")
       (:ul
        (:li (format s "~A ~A" (lisp-implementation-type) (lisp-implementation-version)))
