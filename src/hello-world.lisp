@@ -32,7 +32,7 @@ TODO: cleanup code."
                 (equal (stp:attribute-value elem "class") "price"))
        (setq price-str (stp:data (stp:first-child elem)))
        (setq price (+ price (read-from-string (subseq price-str 4))))))
-   (format t "preu final: ~d~%" price)))
+   price))
 
 ;;; http://www.iberlibro.com/servlet/SearchResults?sts=t&tn=lisp+in+small+pieces&x=0&y=0
 (defun show-iberlibro-hits (term)
@@ -44,20 +44,6 @@ TODO: cleanup code."
                  (equal (stp:local-name a) "div")
                  (equal (stp:attribute-value a "class") "result-addToBasketContainer"))
         (return (find-price a))))))
-
-
-;; (defvar *preferences* '(("thinking forth" . 7)))
-;; (format t "~{~a ~}" (cdr *posix-argv*))
-;; (show-iberlibro-hits (format nil "~{~a ~}" (cdr *posix-argv*)))
-
-
-(hunchentoot:define-easy-handler (hello-sbcl :uri "/books") ()
-  (cl-who:with-html-output-to-string (s)
-    (:html
-     (:head
-      (:title "prices"))
-     (:body
-      (:h1 (show-iberlibro-hits "thinking forth"))))))
 
 (hunchentoot:define-easy-handler (hello-sbcl :uri "/") ()
   (cl-who:with-html-output-to-string (s)
