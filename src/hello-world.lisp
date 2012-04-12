@@ -1,4 +1,4 @@
-(in-package :example)
+;(in-package :example)
 ;(hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 4242))
 ;; Utils
 (defun heroku-getenv (target)
@@ -32,7 +32,6 @@ TODO: cleanup code."
                 (equal (stp:attribute-value elem "class") "price"))
        (setq price-str (stp:data (stp:first-child elem)))
        (setq price (+ price (read-from-string (subseq price-str 4))))))
-   (sleep 7)
    price))
 
 ;;; http://www.iberlibro.com/servlet/SearchResults?sts=t&tn=lisp+in+small+pieces&x=0&y=0
@@ -41,9 +40,15 @@ TODO: cleanup code."
          (str (drakma:http-request *iberlibro* :parameters query))
          (document (chtml:parse str (cxml-stp:make-builder))))
     (stp:do-recursively (a document)
-      (when (and (typep a 'stp:element)
-                 (equal (stp:local-name a) "div")
-                 (equal (stp:attribute-value a "class") "result-addToBasketContainer"))
+      (when (or (and (typep a 'stp:element)
+                     (equal (stp:local-name a) "div")
+                     (or (equal (stp:attribute-value a "class") "result-addToBasketContainer")
+                         (equal (stp:attribute-value a "class") "result-pricing")))
+                (and (typep a 'stp:element)
+                     (equal (stp:local-name a) "td")
+                     (or (equal (stp:attribute-value a "class") "result-addToBasketContainer")
+                         (equal (stp:attribute-value a "class") "result-pricing")))
+                )
         (return (find-price a))))))
 
 (hunchentoot:define-easy-handler (hello-sbcl :uri "/") ()
