@@ -1,22 +1,22 @@
 ;(in-package :example)
 ;(hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port 4242))
 ;; Utils
-(defun heroku-getenv (target)
-  #+ccl (ccl:getenv target)
-  #+sbcl (sb-posix:getenv target))
+;; (defun heroku-getenv (target)
+;;   #+ccl (ccl:getenv target)
+;;   #+sbcl (sb-posix:getenv target))
 
-;; Database
-(defvar *database-url* (heroku-getenv "DATABASE_URL"))
+;; ;; Database
+;; (defvar *database-url* (heroku-getenv "DATABASE_URL"))
 
-(defun db-params ()
-  "Heroku database url format is postgres://username:password@host/database_name.
-TODO: cleanup code."
-  (let* ((url (second (cl-ppcre:split "//" *database-url*)))
-	 (user (first (cl-ppcre:split ":" (first (cl-ppcre:split "@" url)))))
-	 (password (second (cl-ppcre:split ":" (first (cl-ppcre:split "@" url)))))
-	 (host (first (cl-ppcre:split "/" (second (cl-ppcre:split "@" url)))))
-	 (database (second (cl-ppcre:split "/" (second (cl-ppcre:split "@" url))))))
-    (list database user password host)))
+;; (defun db-params ()
+;;   "Heroku database url format is postgres://username:password@host/database_name.
+;; TODO: cleanup code."
+;;   (let* ((url (second (cl-ppcre:split "//" *database-url*)))
+;; 	 (user (first (cl-ppcre:split ":" (first (cl-ppcre:split "@" url)))))
+;; 	 (password (second (cl-ppcre:split ":" (first (cl-ppcre:split "@" url)))))
+;; 	 (host (first (cl-ppcre:split "/" (second (cl-ppcre:split "@" url)))))
+;; 	 (database (second (cl-ppcre:split "/" (second (cl-ppcre:split "@" url))))))
+;;     (list database user password host)))
 
 ;; Handlers
 (push (hunchentoot:create-folder-dispatcher-and-handler "/static/" "/app/public/")
@@ -51,6 +51,9 @@ TODO: cleanup code."
                 )
         (return (find-price a))))))
 
+(defvar *books* '("thinking forth" "compiling with continuations" "the scheme programming language"
+                  "higher order perl" "lisp in small pieces"))
+
 (hunchentoot:define-easy-handler (hello-sbcl :uri "/") ()
   (cl-who:with-html-output-to-string (s)
     (:html
@@ -58,7 +61,8 @@ TODO: cleanup code."
       (:title "Heroku CL Example App"))
      (:body
       (:h1 "Heroku CL Example App")
-      (:h1 (format s "preu: ~a" (show-iberlibro-hits "thinking forth")))
+      (:h1 (dolist (book *books*)
+             (cl-who:htm (format s "~a: ~a" book (show-iberlibro-hits book)) :br ) ))
       (:h3 "Using")
       (:ul
        (:li (format s "~A ~A" (lisp-implementation-type) (lisp-implementation-version)))
@@ -71,6 +75,6 @@ TODO: cleanup code."
       (:h3 "App Database")
       (:div
        (:pre "SELECT version();"))
-      (:div (format s "~A" (postmodern:with-connection (db-params)
-                             (postmodern:query "select version()"))))
+      ;; (:div (format s "~A" (postmodern:with-connection (db-params)
+      ;;                        (postmodern:query "select version()"))))
       (:div (:p "raimonster@gmail.com"))))))
